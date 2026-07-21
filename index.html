@@ -1,451 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prototipo LegalFlow - Funcional</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com/">
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <style>
-    :root { --panel: #fbfaf7; --line: #ddd7cd; --text: #1f1d18; --muted: #777268; --teal: #0f696b; --teal-dark: #0b4f52; --green-deep: #173d30; --green: #2f7d4d; --green-soft: #9cd4ac; --shadow: 0 12px 28px rgba(32,26,17,.08); --radius: 22px; }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; font-family: Inter, system-ui, sans-serif; background: linear-gradient(rgb(236, 231, 221) 0%, rgb(246, 243, 238) 100%); color: var(--text); overflow: hidden; }
-    .frame { width: calc(-20px + 100vw); height: calc(-20px + 100vh); margin: 10px auto; background: rgba(255, 255, 255, 0.42); border: 1px solid rgba(255, 255, 255, 0.58); backdrop-filter: blur(10px); border-radius: 30px; box-shadow: rgba(31, 29, 24, 0.1) 0px 20px 60px; overflow: hidden; display: flex; flex-direction: column; }
-    .topbar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 18px 26px; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, 0.5); flex: 0 0 auto; }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -0.03em; }
-    .logo { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg,var(--teal),#3e8d90); display: grid; place-items: center; color: rgb(255, 255, 255); font-weight: 800; box-shadow: var(--shadow); }
-    .top-center-nav { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .nav { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
-    a, button { font: inherit; cursor: pointer; }
-    .nav a { text-decoration: none; color: var(--text); padding: 11px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; border: 1px solid transparent; transition: 0.2s; }
-    .nav a.ghost { background: rgb(247, 244, 238); border-color: var(--line); }
-    .nav a.user-access, .nav a.primary { background: linear-gradient(160deg, rgb(21, 55, 43) 0%, rgb(26, 69, 52) 60%, rgb(35, 79, 58) 100%); color: var(--green-soft); border: none; text-decoration: none; }
-    .nav a.primary { padding: 11px 22px; }
-    .layout { display: grid; grid-template-columns: 290px minmax(0px, 1fr); gap: 22px; padding: 18px; flex: 1 1 auto; min-height: 0px; }
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-    .sidebar { padding: 18px; display: flex; flex-direction: column; gap: 14px; background: linear-gradient(rgb(252, 251, 248) 0%, rgb(246, 242, 234) 100%); min-height: 0px; }
-    .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); font-weight: 700; }
-    .search-wrap { display: grid; grid-template-columns: 1fr 46px; gap: 8px; }
-    .search { background: rgb(255, 255, 255); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; color: rgb(139, 133, 123); font-size: 14px; display: flex; align-items: center; }
-    .search-btn { border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid var(--line); display: grid; place-items: center; font-size: 18px; color: var(--teal); }
-    .services-grid { display: grid; grid-template-columns: 1fr; gap: 9px; overflow: auto; padding-right: 4px; }
-    .service-card { background: rgb(255, 255, 255); border: 1px solid rgb(229, 223, 213); border-radius: 16px; padding: 12px 14px; font-weight: 700; font-size: 14px; line-height: 1.25; box-shadow: rgba(31, 29, 24, 0.04) 0px 4px 14px; text-decoration: none; color: var(--text); }
-    .main { padding: 22px 26px 20px; display: flex; flex-direction: column; gap: 20px; background: radial-gradient(circle at top right, rgba(15,105,107,.08), transparent 30%), var(--panel); min-height: 0px; }
-    .service-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 16px; background: rgb(255, 255, 255); border: 1px solid var(--line); font-weight: 700; font-size: 13px; color: rgb(44, 41, 34); text-decoration: none; }
-    .service-icon { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; font-size: 14px; background: linear-gradient(135deg, rgb(232, 241, 241), rgb(246, 251, 251)); color: var(--teal); }
-    .hero { display: grid; grid-template-columns: minmax(0px, 1.28fr) 330px; gap: 22px; align-items: stretch; min-height: 0px; flex: 1 1 auto; }
-    .copy { padding: 8px 0px; display: flex; flex-direction: column; justify-content: center; min-width: 0px; }
-    .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal); font-weight: 800; margin-bottom: 12px; }
-    h1 { margin: 0px 0px 14px; font-size: clamp(36px, 3.6vw, 54px); line-height: 0.98; letter-spacing: -0.055em; }
-    .sub { margin: 0px 0px 22px; font-size: 18px; line-height: 1.5; color: rgb(95, 90, 82); max-width: 58ch; }
-    .trust-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
-    .trust-pill { padding: 10px 12px; border-radius: 999px; background: rgb(255, 255, 255); border: 1px solid var(--line); font-size: 13px; font-weight: 700; color: rgb(91, 86, 77); }
-    .cta { display: inline-flex; align-items: center; justify-content: center; padding: 18px 40px; border-radius: 18px; background: linear-gradient(135deg,var(--teal),var(--teal-dark)); color: rgb(255, 255, 255); text-decoration: none; font-weight: 800; font-size: 18px; }
-    .right-stack { display: grid; grid-template-rows: 1.2fr 0.78fr; gap: 14px; min-height: 100%; }
-    .vertical-card { border-radius: 24px; padding: 22px; border: 1px solid var(--line); background: linear-gradient(rgb(255, 255, 255) 0%, rgb(244, 241, 234) 100%); display: flex; flex-direction: column; justify-content: space-between; }
-    .premium-card { background: linear-gradient(160deg, rgb(15, 47, 36) 0%, rgb(26, 69, 52) 60%, rgb(35, 79, 58) 100%); color: rgb(243, 255, 245); border: none; cursor: pointer; }
-    .premium-small { font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--green-soft); font-weight: 700; }
-    .premium-title { font-size: 34px; line-height: 1.02; font-weight: 800; letter-spacing: -0.05em; }
-    .premium-title span { display: block; color: var(--green-soft); }
-    .pill { align-self: flex-start; background: rgba(255, 255, 255, 0.09); border: 1px solid rgba(255, 255, 255, 0.12); color: rgb(223, 244, 230); padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
-    .placeholder-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: rgb(128, 121, 108); font-weight: 700; }
-    .status-box { display: grid; gap: 10px; }
-    .status-item { padding: 11px 13px; border-radius: 16px; background: rgba(255, 255, 255, 0.72); border: 1px solid rgb(225, 219, 207); }
-    .status-item strong { display: block; font-size: 13px; margin-bottom: 4px; }
-    .status-item span { font-size: 13px; color: rgb(101, 95, 86); }
-    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; flex: 0 0 auto; }
-    .feature { background: linear-gradient(rgb(255, 255, 255) 0%, rgb(246, 242, 234) 100%); border: 1px solid var(--line); border-radius: 20px; padding: 18px; cursor: pointer; }
-    .feature .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; margin-bottom: 10px; }
-    .feature h3 { margin: 0px 0px 8px; font-size: 21px; letter-spacing: -0.04em; }
-    .feature p { margin: 0px; color: rgb(102, 97, 86); line-height: 1.45; font-size: 14px; }
-    
-    /* MODALES Y PANTALLAS */
-    .user-page, .recovery-page, .premium-home-page, .info-page, .solv-form-page, .solv-page, .fich-page, .premasc-form-page, .premasc-page, .burofax-page, .comm-page, .highclaim-page, .form-page {
-      position: fixed; inset: 78px 0px 0px; background: rgb(246, 241, 232); z-index: 160; overflow: auto; display: none;
-    }
-    .open { display: block !important; }
-    .form-shell, .user-shell, .recovery-shell, .premium-home-shell, .info-shell, .solv-form-shell, .solv-shell, .fich-shell, .premasc-form-shell, .premasc-shell, .burofax-shell, .comm-shell, .highclaim-shell {
-      max-width: 1280px; margin: 0 auto; padding: 28px 24px 56px;
-    }
-    .user-card, .recovery-card, .judicial-form, .highclaim-main, .comm-main, .burofax-main, .premasc-main, .solv-main, .fich-main, .solv-form-main, .info-main {
-      background: rgb(255, 253, 248); border: 1px solid rgb(221, 212, 200); border-radius: 30px; padding: 30px; box-shadow: rgba(31, 26, 20, 0.1) 0px 18px 44px;
-    }
-    .form-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .close-top-page, .form-back { border: none; border-radius: 999px; padding: 11px 15px; background: rgb(23, 61, 48); color: rgb(236, 246, 238); cursor: pointer; font-weight: 700; }
-    .form-block { border: 1px solid rgb(228, 220, 208); border-radius: 20px; padding: 18px; margin-bottom: 16px; background: rgb(255, 255, 255); }
-    .field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .field { display: grid; gap: 6px; }
-    .field.full { grid-column: 1 / -1; }
-    .field label { font-size: 12px; text-transform: uppercase; color: rgb(123, 117, 105); font-weight: 700; }
-    .field input, .field textarea { border: 1px solid rgb(216, 208, 196); border-radius: 14px; padding: 11px 12px; background: rgb(253, 251, 247); font: inherit; }
-    .field textarea { min-height: 100px; }
-    .comm-btn, .begin-btn, .validate-btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; margin-top: 12px; padding: 13px 15px; border: none; border-radius: 999px; background: rgb(23, 61, 48); color: rgb(237, 247, 239); font-weight: 700; cursor: pointer; }
-    .video-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
-    .video-item { border: 1px solid rgb(229, 223, 214); border-radius: 22px; padding: 18px; background: rgb(252, 250, 247); text-align: center; }
-    .video-thumb { width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 18px; background: rgb(23, 61, 48); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-    .premium-home-page { background: linear-gradient(135deg, rgb(22, 18, 15) 0%, rgb(43, 31, 22) 45%, rgb(91, 71, 46) 100%); color: #f4ede3; }
-    .premium-home-main { background: rgba(255, 249, 241, 0.08); border: 1px solid rgba(255, 241, 221, 0.14); border-radius: 30px; padding: 30px; }
-    
-    @media (max-width: 980px) {
-      .layout, .hero, .field-grid, .video-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalFlow - Gestión Legal Inteligente</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.4;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 6px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #475569;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            background-color: #fff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+    </style>
 </head>
 <body>
-  <div class="frame">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">L</div>
-        <div>LegalFlow</div>
-      </div>
 
-      <div class="top-center-nav">
-        <a class="service-nav-item" id="navInicio"><div class="service-icon">⌂</div><span>Inicio</span></a>
-        <a class="service-nav-item" id="navServicios"><div class="service-icon">≣</div><span>Servicios</span></a>
-        <a class="service-nav-item" id="navPremium"><div class="service-icon">★</div><span>Premium</span></a>
-      </div>
+    <div class="container">
+        <header>
+            <h1>LegalFlow</h1>
+            <p>Plataforma de Automatización y Gestión de Expedientes</p>
+        </header>
 
-      <nav class="nav">
-        <a id="navContacto">Contacto</a>
-        <a class="user-access" id="navAccesoUsuario">Acceso usuario</a>
-        <a class="primary" id="navRegistro">Regístrate</a>
-      </nav>
-    </header>
-
-    <main class="layout">
-      <aside class="panel sidebar" id="servicios">
-        <div class="label">Buscador</div>
-        <div class="search-wrap">
-          <div class="search">Buscar servicio o trámite</div>
-          <button class="search-btn" aria-label="Buscar">⌕</button>
-        </div>
-        <div class="label" style="margin-top:2px;">Carta de servicios</div>
-        <div class="services-grid">
-          <a class="service-card" id="srvMenor2000">Reclamaciones menos 2.000 €</a>
-          <a class="service-card" id="srvMayor2000">Reclamaciones más 2.000 €</a>
-          <a class="service-card" id="srvComunicaciones">Comunicaciones fehacientes</a>
-          <a class="service-card" id="srvPremasc">Premask. Ley 1/2025</a>
-          <a class="service-card" id="srvInformesSolvencia">Informes de solvencia</a>
-          <a class="service-card" id="srvFicherosSolvencia">Ficheros de solvencia</a>
-          <a class="service-card" id="srv7">Asesoría jurídica premium</a>
-          <a class="service-card" id="srv8">Pax autónomos y empresas</a>
-        </div>
-      </aside>
-
-      <section class="panel main" id="inicio">
-        <div class="hero">
-          <div class="copy">
-            <div class="eyebrow">Gestión jurídica y reclamaciones con trazabilidad</div>
-            <h1>Gestiona comunicaciones y reclamaciones con rigor jurídico</h1>
-            <p class="sub">Centraliza tus comunicaciones, tramita reclamaciones de cantidad y accede a un entorno con seguimiento, orden y opciones premium.</p>
-            <div class="trust-row">
-              <div class="trust-pill">Asistencia jurídica especializada</div>
-              <div class="trust-pill">Entorno privado seguro</div>
-              <div class="trust-pill">Seguimiento documental</div>
-            </div>
-            <a class="cta" id="btnCtaRegistro">Regístrate</a>
-          </div>
-
-          <div class="right-stack" id="premium">
-            <div class="vertical-card premium-card" id="cardPremium">
-              <div class="premium-small">Clientes premium</div>
-              <div class="premium-title">Clientes <span>Premium</span></div>
-              <div class="pill">Atención prioritaria</div>
-            </div>
-            <div class="vertical-card">
-              <div class="placeholder-title">Estado de expediente</div>
-              <div class="status-box">
-                <div class="status-item">
-                  <strong>Documentación recibida</strong>
-                  <span>Expediente completado y pendiente de revisión.</span>
+        <div class="card">
+            <h2>Nuevo Expediente</h2>
+            <form id="legalForm">
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="cliente">Nombre del Cliente</label>
+                        <input type="text" id="cliente" placeholder="Ej. Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Procedimiento</label>
+                        <select id="tipo">
+                            <option>Desahucio / Reclamación</option>
+                            <option>Mediación Inmobiliaria</option>
+                            <option>Revisión de Contrato</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="status-item">
-                  <strong>Siguiente actuación</strong>
-                  <span>Validación jurídica y preparación de comunicación.</span>
+                <div class="form-group">
+                    <label for="notas">Observaciones Principales</label>
+                    <textarea id="notas" rows="2" placeholder="Añade detalles breves..."></textarea>
                 </div>
-              </div>
+                <button type="button" class="btn">Crear Registro</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Estado del Servicio</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span class="status-badge">Sistema Activo</span>
+                    <p style="font-size: 0.8rem; margin-top: 4px; color: #64748b;">Conexión directa con base de datos configurada.</p>
+                </div>
+                <button class="btn" style="background-color: #059669;">Ver Métricas</button>
             </div>
-          </div>
         </div>
 
-        <div class="features">
-          <div class="feature" id="featVideos">
-            <div class="kicker">Bloque 01</div>
-            <h3>Vídeos y tutoriales</h3>
-            <p>Reúne vídeos explicativos y tutoriales prácticos para que cualquier ciudadano pueda entender y usar cada procedimiento.</p>
-          </div>
-          <div class="feature" id="featValor">
-            <div class="kicker">Bloque 02</div>
-            <h3>Propuestas de valor</h3>
-            <p>Ponemos en valor por qué la plataforma ofrece una experiencia premium incluso en servicios pensados para acceso low cost.</p>
-          </div>
-          <div class="feature" id="featFundacion">
-            <div class="kicker">Bloque 03</div>
-            <h3>Fundación Benéfica Tomás Almendros Almendros</h3>
-            <p>Espacio reservado para contenidos complementarios, ayudas prácticas o una tercera propuesta de apoyo al usuario.</p>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- PANTALLAS DE MODALES / VENTANAS -->
-
-  <!-- ACCESO USUARIO -->
-  <div class="user-page" id="userAccessPage">
-    <div class="user-shell">
-      <div class="user-card">
-        <div class="form-toolbar">
-          <div><div class="window-kicker">Acceso usuario</div><h2>Área privada</h2></div>
-          <button class="close-top-page">Volver</button>
-        </div>
-        <h1>Acceso de usuario</h1>
-        <p>Introduzca sus credenciales para acceder a su expediente, documentación y seguimiento privado.</p>
-        <div class="form-block">
-          <div class="field-grid">
-            <div class="field full"><label>Usuario</label><input type="text" placeholder="Nombre de usuario"></div>
-            <div class="field full"><label>Contraseña</label><input type="password" placeholder="Contraseña"></div>
-          </div>
-          <div style="display:flex; gap:16px; margin-top:14px;">
-            <button id="btnForgotUser" style="background:none; border:none; color:var(--teal); font-weight:700; text-decoration:underline;">Olvidó su usuario</button>
-            <button id="btnForgotPass" style="background:none; border:none; color:var(--teal); font-weight:700; text-decoration:underline;">Olvidó su contraseña</button>
-          </div>
-          <button class="comm-btn" style="margin-top:18px; max-width:260px;">Entrar</button>
-        </div>
-      </div>
+        <footer>
+            <p>&copy; LegalFlow - Todos los derechos reservados</p>
+        </footer>
     </div>
-  </div>
 
-  <!-- RECUPERACIÓN -->
-  <div class="recovery-page" id="recoveryPage">
-    <div class="recovery-shell">
-      <div class="recovery-card">
-        <div class="form-toolbar">
-          <div><div class="window-kicker">Recuperación</div><h2>Recuperar acceso</h2></div>
-          <button class="close-top-page">Volver</button>
-        </div>
-        <h1>Indique su correo electrónico</h1>
-        <p>Le enviaremos un enlace para restablecer su usuario o su contraseña.</p>
-        <div class="form-block">
-          <div class="field-grid">
-            <div class="field full"><label>Correo electrónico</label><input type="email" placeholder="Correo electrónico"></div>
-          </div>
-          <button class="comm-btn" style="margin-top:18px; max-width:320px;">Enviar enlace de restablecimiento</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECCIÓN PREMIUM -->
-  <div class="premium-home-page" id="premiumHomePage">
-    <div class="premium-home-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker" style="color:#f1d7a1">Clientes premium</div><h2>Atención jurídica selecta</h2></div>
-        <button class="close-top-page" style="background:rgba(255,249,241,.12); color:#fff; border:1px solid rgba(255,241,221,.18)">Volver a inicio</button>
-      </div>
-      <div class="premium-home-main">
-        <h1>Un entorno pensado para clientes de alto valor que exigen trato excelente, reserva y capacidad jurídica real.</h1>
-        <p>Contamos con un bufete jurídico orientado a perfiles que necesitan una atención más cuidada, más estratégica y más personalizada.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- VÍDEOS Y TUTORIALES -->
-  <div class="info-page" id="videosPage">
-    <div class="info-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Vídeos y tutoriales</div><h2>Biblioteca visual de apoyo</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="info-main">
-        <h1>Vídeos y tutoriales para explicar de forma visual cómo funciona cada servicio.</h1>
-        <div class="video-grid">
-          <div class="video-item"><div class="video-thumb">▶️</div><div>Reclamación menos 2.000 €</div></div>
-          <div class="video-item"><div class="video-thumb">▶️</div><div>Reclamación más 2.000 €</div></div>
-          <div class="video-item"><div class="video-thumb">▶️</div><div>Comunicaciones fehacientes</div></div>
-          <div class="video-item"><div class="video-thumb">▶️</div><div>PREMASC · Ley 1/2025</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PROPUESTAS DE VALOR -->
-  <div class="info-page" id="valorPage">
-    <div class="info-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Solvencia y atención</div><h2>Propuesta institucional de alto valor</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="info-main">
-        <h1>Una plataforma solvente, transversal y preparada para atender desde trámites masivos hasta asuntos complejos.</h1>
-      </div>
-    </div>
-  </div>
-
-  <!-- FUNDACIÓN -->
-  <div class="info-page" id="castarasPage">
-    <div class="info-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Fundación Benéfica</div><h2>Compromiso humano y raíz social</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="info-main">
-        <h1>Colaboramos con la Fundación Benéfica Tomás Almendros Almendros.</h1>
-        <p>Esta colaboración representa una forma de trasladar al terreno social los valores que inspiran nuestro proyecto.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- FORMULARIO MENOS 2000 -->
-  <div class="form-page" id="menor2000Page">
-    <div class="form-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Reclamaciones judiciales</div><h2>Demanda sucinta de juicio verbal inferior a 2.000 €</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="judicial-form">
-        <h1>Formulario base</h1>
-        <div class="form-block">
-          <h3>1. Datos del demandante</h3>
-          <div class="field-grid">
-            <div class="field"><label>Nombre y apellidos</label><input type="text" placeholder="Nombre completo"></div>
-            <div class="field"><label>DNI / NIE</label><input type="text" placeholder="Documento"></div>
-          </div>
-        </div>
-        <button class="validate-btn">Validar y presentar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FORMULARIO MÁS 2000 -->
-  <div class="highclaim-page" id="mayor2000Page">
-    <div class="highclaim-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Reclamaciones superiores a 2.000 €</div><h2>Vía previa obligatoria</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="highclaim-main">
-        <h1>Antes de demandar, la ley exige intentar un acuerdo previo.</h1>
-        <button class="begin-btn" id="goPremaskMayor2000">Comenzar trámite previo</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- COMUNICACIONES FEHACIENTES -->
-  <div class="comm-page" id="comunicacionesPage">
-    <div class="comm-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Comunicaciones fehacientes</div><h2>Servicio LegalFlow</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="comm-main">
-        <h1>Servicio de comunicaciones fehacientes.</h1>
-        <button class="comm-btn" id="goBurofaxDirect">Ir al formulario de Burofax</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- BUROFAX FORM -->
-  <div class="burofax-page" id="burofaxPage">
-    <div class="burofax-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Comunicación fehaciente</div><h2>Formulario base de burofax</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="burofax-main">
-        <h1>Enviar Burofax Fehaciente</h1>
-        <div class="form-block">
-          <div class="field-grid">
-            <div class="field full"><label>Remitente</label><input type="text"></div>
-            <div class="field full"><label>Destinatario</label><input type="text"></div>
-            <div class="field full"><label>Mensaje</label><textarea></textarea></div>
-          </div>
-        </div>
-        <button class="comm-btn">Enviar comunicación</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PREMASC PAGE -->
-  <div class="premasc-page" id="premascPage">
-    <div class="premasc-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">PREMASC · Ley 1/2025</div><h2>Procedimiento previo</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="premasc-main">
-        <h1>PREMASC: trámite previo imprescindible.</h1>
-        <button class="comm-btn" id="startPremascFlow">Comenzar PREMASC</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INFORMES SOLVENCIA -->
-  <div class="solv-page" id="informesSolvenciaPage">
-    <div class="solv-shell">
-      <div class="form-toolbar">
-        <div><div class="window-kicker">Informes de solvencia</div><h2>Consulta de solvencia</h2></div>
-        <button class="close-top-page">Volver a inicio</button>
-      </div>
-      <div class="solv-main">
-        <h1>Informes de solvencia y riesgo.</h1>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCRIPT INTERACTIVO (LA LÓGICA QUE FALTABA) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Función para ocultar todas las ventanas abiertas
-      function closeAll() {
-        const pages = document.querySelectorAll('.user-page, .recovery-page, .premium-home-page, .info-page, .solv-form-page, .solv-page, .fich-page, .premasc-form-page, .premasc-page, .burofax-page, .comm-page, .highclaim-page, .form-page');
-        pages.forEach(page => page.classList.remove('open'));
-      }
-
-      // Función para abrir una ventana por ID
-      function openPage(id) {
-        closeAll();
-        const page = document.getElementById(id);
-        if (page) page.classList.add('open');
-      }
-
-      // Conectar botones de cierre ("Volver")
-      document.querySelectorAll('.close-top-page, .form-back').forEach(btn => {
-        btn.addEventListener('click', closeAll);
-      });
-
-      // Navegación superior
-      document.getElementById('navInicio').addEventListener('click', closeAll);
-      document.getElementById('navPremium').addEventListener('click', () => openPage('premiumHomePage'));
-      document.getElementById('navAccesoUsuario').addEventListener('click', () => openPage('userAccessPage'));
-      document.getElementById('navRegistro').addEventListener('click', () => openPage('userAccessPage'));
-      document.getElementById('btnCtaRegistro').addEventListener('click', () => openPage('userAccessPage'));
-      document.getElementById('cardPremium').addEventListener('click', () => openPage('premiumHomePage'));
-
-      // Olvidó usuario / contraseña
-      document.getElementById('btnForgotUser').addEventListener('click', () => openPage('recoveryPage'));
-      document.getElementById('btnForgotPass').addEventListener('click', () => openPage('recoveryPage'));
-
-      // Botones del menú lateral
-      document.getElementById('srvMenor2000').addEventListener('click', () => openPage('menor2000Page'));
-      document.getElementById('srvMayor2000').addEventListener('click', () => openPage('mayor2000Page'));
-      document.getElementById('srvComunicaciones').addEventListener('click', () => openPage('comunicacionesPage'));
-      document.getElementById('srvPremasc').addEventListener('click', () => openPage('premascPage'));
-      document.getElementById('srvInformesSolvencia').addEventListener('click', () => openPage('informesSolvenciaPage'));
-
-      // Bloques inferiores (Vídeos, Valor, Fundación)
-      document.getElementById('featVideos').addEventListener('click', () => openPage('videosPage'));
-      document.getElementById('featValor').addEventListener('click', () => openPage('valorPage'));
-      document.getElementById('featFundacion').addEventListener('click', () => openPage('castarasPage'));
-
-      // Enlaces internos de flujo
-      const goPremask = document.getElementById('goPremaskMayor2000');
-      if (goPremask) goPremask.addEventListener('click', () => openPage('premascPage'));
-
-      const goBurofax = document.getElementById('goBurofaxDirect');
-      if (goBurofax) goBurofax.addEventListener('click', () => openPage('burofaxPage'));
-    });
-  </script>
 </body>
 </html>
