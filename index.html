@@ -3,193 +3,1192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prototipo Home Servicios v4</title>
+  <title>Prototipo Home Servicios v5 - LegalFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-main: #e2e8f0;
-      --card-bg: #f1f5f9;
-      --card-inner: #ffffff;
-      --green-dark: #064e3b;
-      --green-header: #022c22;
-      --green-light: #d1fae5;
-      --text-dark: #0f172a;
-      --text-muted: #64748b;
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --radius-pill: 9999px;
+    :root{
+      --panel:#fbfaf7;
+      --line:#ddd7cd;
+      --text:#1f1d18;
+      --muted:#777268;
+      --teal:#0f696b;
+      --teal-dark:#0b4f52;
+      --green-deep:#173d30;
+      --green:#2f7d4d;
+      --green-soft:#9cd4ac;
+      --shadow:0 8px 20px rgba(32,26,17,.06);
+      --radius:18px;
     }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:'Inter',system-ui,sans-serif;background:linear-gradient(180deg,#ece7dd 0%, #f6f3ee 100%);color:var(--text);overflow:hidden;font-size:14px}
+    .frame{width:calc(100vw - 20px);height:calc(100vh - 20px);margin:10px auto;background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.58);backdrop-filter:blur(10px);border-radius:24px;box-shadow:0 15px 45px rgba(31,29,24,.10);overflow:hidden;display:flex;flex-direction:column}
+    .topbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.5);flex:0 0 auto}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.03em}
+    .logo{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--teal),#3e8d90);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:var(--shadow);font-size:15px}
+    .top-center-nav{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+    .nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    a,button{font:inherit;cursor:pointer}
+    .nav a{text-decoration:none;color:var(--text);padding:8px 14px;border-radius:999px;font-weight:700;font-size:13px;border:1px solid transparent;transition:.2s ease}
+    .nav a:hover,.service-nav-item:hover,.search-btn:hover,.service-card:hover,.feature:hover{transform:translateY(-1px)}
+    .nav a.ghost{background:#f7f4ee;border-color:var(--line)}
+    .nav a.user-access,.nav a.primary{background:linear-gradient(160deg,#15372b 0%, #1a4534 60%, #234f3a 100%);color:var(--green-soft);border:none}
+    .nav a.primary{padding:8px 18px}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    .layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;padding:14px;flex:1 1 auto;min-height:0;overflow:hidden}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .sidebar{padding:14px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#fcfbf8 0%, #f6f2ea 100%);min-height:0}
+    .label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}
+    .search-wrap{display:grid;grid-template-columns:1fr 38px;gap:6px}
+    .search{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:#8b857b;font-size:12px;display:flex;align-items:center}
+    .search-btn{border:none;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:14px;color:var(--teal)}
+    .services-grid{display:flex;flex-direction:column;gap:6px;overflow-y:auto;padding-right:2px}
+    .service-card{background:#fff;border:1px solid #e5dfd5;border-radius:12px;padding:10px 12px;font-weight:700;font-size:12.5px;line-height:1.2;box-shadow:0 2px 8px rgba(31,29,24,.02);text-decoration:none;color:var(--text);transition:.15s}
+    .service-card:hover{border-color:var(--teal);background:#fafcfc}
+    .service-card.empty{min-height:40px;background:rgba(255,255,255,.55);border:1px dashed #d9d1c4;box-shadow:none}
+
+    .main{padding:16px 20px;display:flex;flex-direction:column;gap:14px;background:radial-gradient(circle at top right, rgba(15,105,107,.05), transparent 30%), var(--panel);min-height:0;overflow-y:auto}
+    .service-nav-item{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:700;font-size:12px;color:#2c2922;text-decoration:none}
+    .service-icon{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:linear-gradient(135deg,#e8f1f1,#f6fbfb);color:var(--teal)}
+
+    .hero{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:stretch;min-height:0;flex:1 1 auto}
+    .copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
+    .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);font-weight:800;margin-bottom:8px}
+    
+    /* TIPOGRAFÍA SOLEMNE Y ANTIGUA PARA EL TÍTULO PRINCIPAL */
+    h1{margin:0 0 10px;font-family:'Playfair Display',serif;font-size:clamp(26px,2.4vw,34px);line-height:1.15;letter-spacing:-.02em;color:#18362c;font-weight:700;}
+    
+    .sub{margin:0 0 16px;font-size:14px;line-height:1.45;color:#5f5a52;max-width:52ch}
+    .trust-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .trust-pill{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:11.5px;font-weight:700;color:#5b564d}
+    .cta{display:inline-flex;align-items:center;justify-content:center;width:fit-content;padding:12px 28px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;text-decoration:none;font-weight:800;font-size:14px}
+
+    .right-stack{display:grid;grid-template-rows:1fr 1fr;gap:10px;height:100%}
+    .vertical-card{border-radius:16px;padding:14px 16px;border:1px solid var(--line);background:linear-gradient(180deg,#fff 0%, #f4f1ea 100%);display:flex;flex-direction:column;justify-content:space-between}
+    .premium-card{background:linear-gradient(160deg,#0f2f24 0%, #1a4534 60%, #234f3a 100%);color:#f3fff5;border:none;cursor:pointer;transition:transform .15s}
+    .premium-card:hover{transform:translateY(-2px)}
+    .premium-small{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--green-soft);font-weight:700}
+    .premium-title{font-size:22px;line-height:1.05;font-weight:800;letter-spacing:-.04em}
+    .premium-title span{display:block;color:var(--green-soft)}
+    .pill{align-self:flex-start;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#dff4e6;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+    .placeholder-title{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#80796c;font-weight:700;margin-bottom:6px}
+    .status-box{display:grid;gap:6px}
+    .status-item{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.75);border:1px solid #e1dbcf}
+    .status-item strong{display:block;font-size:11.5px;margin-bottom:2px}
+    .status-item span{font-size:11px;color:#655f56;display:block;line-height:1.2}
+
+    .features{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;flex:0 0 auto}
+    .feature{
+      background:linear-gradient(180deg,#fff 0%, #f6f2ea 100%);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 14px;
+      cursor:pointer;
+      transition:transform .15s, border-color .15s;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
+    .feature:hover{transform:translateY(-2px);border-color:var(--teal)}
+    .feature .kicker{font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:800;margin-bottom:2px}
+    .feature h3{margin:0 0 2px;font-size:14px;letter-spacing:-.02em;font-weight:700}
+    .feature p{margin:0;color:#666156;line-height:1.25;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-dark);
-      padding: 20px;
-      display: flex;
-      justify-content: center;
+    /* FOOTER LEGAL INSTITUCIONAL */
+    .footer-legal{display:flex; justify-content:space-between; align-items:center; padding:10px 4px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); margin-top:auto;}
+    .footer-legal-links{display:flex; gap:16px;}
+    .footer-legal-links a{color:var(--muted); text-decoration:none; transition:.2s;}
+    .footer-legal-links a:hover{color:var(--teal); text-decoration:underline;}
+
+    /* MODALES Y PANTALLAS */
+    .user-page, .recovery-page, .premium-home-page, .info-page, .solv-form-page, .solv-page, .fich-page, .premasc-form-page, .premasc-page, .burofax-page, .comm-page, .highclaim-page, .form-page {
+      position:fixed; inset:0; background:rgba(246, 241, 232, 0.98); z-index:160; overflow:auto; display:none; backdrop-filter:blur(5px);
     }
-
-    .app-container {
-      width: 100%;
-      max-width: 1300px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      position: relative;
+    .open{display:block !important}
+    .form-shell, .user-shell, .recovery-shell, .premium-home-shell, .info-shell, .solv-form-shell, .solv-shell, .fich-shell, .premasc-form-shell, .premasc-shell, .burofax-shell, .comm-shell, .highclaim-shell {
+      max-width:1120px; margin:20px auto; padding:20px;
     }
-
-    /* NAV SUPERIOR */
-    .top-nav {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
-      padding-right: 10px;
+    .user-card, .recovery-card, .judicial-form, .highclaim-main, .comm-main, .burofax-main, .premasc-main, .solv-main, .fich-main, .solv-form-main, .info-main {
+      background:#fffdf8; border:1px solid #ddd4c8; border-radius:20px; padding:24px; box-shadow:0 10px 30px rgba(31,26,20,.1);
     }
-
-    .nav-pill-group {
-      background: #e2e8f0;
-      border: 1px solid #cbd5e1;
-      padding: 4px;
-      border-radius: var(--radius-pill);
-      display: flex;
-      gap: 4px;
+    .form-toolbar{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px}
+    .close-top-page, .form-back{border:none; border-radius:999px; padding:8px 16px; background:#173d30; color:#ecf6ee; cursor:pointer; font-weight:700; font-size:12px}
+    .form-block{border:1px solid #e4dcd0; border-radius:14px; padding:14px; margin-bottom:14px; background:#fff}
+    .form-block h3{margin:0 0 10px; font-size:16px; letter-spacing:-.02em}
+    .field-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+    .field{display:grid; gap:4px}
+    .field.full{grid-column:1 / -1}
+    .field label{font-size:11px; text-transform:uppercase; color:#7b7569; font-weight:700}
+    .field input, .field textarea{border:1px solid #d8d0c4; border-radius:10px; padding:8px 10px; background:#fdfbf7; font:inherit; font-size:13px}
+    .field textarea{min-height:80px; resize:vertical}
+    .comm-btn, .begin-btn, .validate-btn{display:inline-flex; justify-content:center; align-items:center; width:100%; margin-top:10px; padding:10px 14px; border:none; border-radius:999px; background:#173d30; color:#edf7ef; font-weight:700; cursor:pointer; font-size:13px}
+    .ghost-btn { display:inline-flex; justify-content:center; align-items:center; width:100%; padding:10px 14px; border:1px solid #173d30; border-radius:999px; background:transparent; color:#173d30; font-weight:700; cursor:pointer; font-size:13px; transition:0.2s; }
+    .ghost-btn:hover { background:#173d30; color:#fff; }
+    
+    .form-layout, .highclaim-hero, .comm-layout, .burofax-layout, .premasc-layout, .premasc-form-layout, .solv-layout, .fich-layout, .info-layout, .premium-home-layout {
+      display:grid; grid-template-columns:minmax(0, 1fr) 300px; gap:16px; align-items:start;
     }
-
-    .nav-pill {
-      background: transparent;
-      border: none;
-      padding: 8px 18px;
-      border-radius: var(--radius-pill);
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-dark);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .solv-form-layout { display:grid; grid-template-columns:minmax(0, 1fr) 260px 260px; gap:16px; align-items:start; }
+    
+    .action-stack, .highclaim-side, .comm-side, .burofax-side, .premasc-side, .premasc-form-side, .solv-side, .fich-side, .solv-form-actions, .solv-form-note, .info-side, .premium-home-side {
+      display:grid; gap:10px; position:sticky; top:20px;
     }
-
-    .nav-pill.active {
-      background: #ffffff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    .action-card, .highclaim-card, .comm-card, .burofax-action, .premasc-card, .premasc-form-card, .solv-card, .fich-card, .solv-mini-card, .info-card, .premium-home-side-card {
+      background:#fffdf8; border:1px solid #ddd4c8; border-radius:16px; padding:16px; box-shadow:0 8px 20px rgba(31,26,20,.06);
     }
-
-    .btn-action {
-      border: none;
-      padding: 8px 20px;
-      border-radius: var(--radius-pill);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
+    .action-card h3, .highclaim-card h3, .comm-card h3, .burofax-action h3, .premasc-card h3, .premasc-form-card h3, .solv-card h3, .fich-card h3, .solv-mini-card h3, .info-card h3 {
+      margin:0 0 6px; font-size:15px; letter-spacing:-.02em;
     }
-
-    .btn-light {
-      background: #ffffff;
-      color: var(--text-dark);
-      border: 1px solid #cbd5e1;
+    .action-price{font-size:11px; color:#173d30; font-weight:800; text-transform:uppercase; letter-spacing:.05em}
+    .action-card p, .highclaim-card p, .comm-card p, .burofax-action p, .premasc-card p, .premasc-form-card p, .solv-card p, .fich-card p, .solv-mini-card p, .info-card p, .premium-home-side-card p {
+      margin:0; color:#665f53; line-height:1.4; font-size:12.5px;
     }
+    
+    .highclaim-band, .comm-points, .premasc-points, .solv-points, .fich-points { display:grid; gap:10px; margin-top:14px; }
+    .highclaim-point, .comm-point, .premasc-point, .solv-point, .fich-point { padding:12px 14px; border-radius:14px; background:#f5efe6; border:1px solid #e1d7ca; font-size:12.5px; line-height:1.45; color:#5f5a52; }
+    .highclaim-point strong, .comm-point strong, .premasc-point strong, .solv-point strong, .fich-point strong { display:block; margin-bottom:4px; font-size:14px; color:#1f1d18; }
 
-    .btn-dark {
-      background: var(--green-header);
-      color: #ffffff;
+    .selection-box{display:flex; align-items:center; gap:8px; margin-top:8px; padding:8px 10px; border-radius:10px; background:#f4efe6; border:1px solid #dfd4c3; color:#544e43; font-size:12px; font-weight:600; cursor:pointer}
+    .selection-box input{width:16px; height:16px; accent-color:#173d30}
+    .doc-list{display:grid; gap:6px; margin-top:8px}
+    .doc-item{padding:8px 10px; border-radius:10px; background:#f4efe6; border:1px solid #e0d7cb; font-size:12px; cursor:pointer; transition:.15s;}
+    .doc-item:hover{background:#ede6dc; border-color:#d4c8b8;}
+    
+    .submit-band{margin-top:14px; padding:14px; border-radius:14px; background:#efe8da; border:1px solid #dccfb9}
+    .form-note{font-size:12px; color:#726b5f; line-height:1.4}
+
+    .video-grid{display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-top:16px}
+    .video-item{border:1px solid #e5dfd6; border-radius:14px; padding:12px; background:#fcfaf7; text-align:center; font-size:12px; font-weight:700}
+    .video-thumb{width:40px; height:40px; margin:0 auto 8px; border-radius:10px; background:#173d30; color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px}
+    
+    .premium-home-page{background:linear-gradient(135deg, #16120f 0%, #2b1f16 45%, #5b472e 100%); color:#f4ede3}
+    .premium-home-main, .premium-home-side-card{background:rgba(255,249,241,.08); border:1px solid rgba(255,241,221,.14); border-radius:20px; padding:20px}
+    .premium-badge{display:inline-flex; align-items:center; padding:5px 10px; border-radius:999px; background:rgba(255,232,192,.14); border:1px solid rgba(255,232,192,.22); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#f6e4be; margin-bottom:10px}
+
+    .pack-btn { background: #fff; border: 1px solid #dcd7ce; padding: 14px; border-radius: 12px; text-align: left; font-weight: 700; font-size: 14px; color: #1f1d18; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.2s; cursor: pointer; }
+    .pack-btn:hover { border-color: var(--teal); background: #fdfdfc; transform: translateY(-1px); }
+
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .frame { height: auto; min-height: 100vh; overflow: visible; }
+      .layout, .hero, .field-grid, .video-grid, .features, .form-layout, .highclaim-hero, .comm-layout, .burofax-layout, .premasc-layout, .premasc-form-layout, .solv-layout, .fich-layout, .solv-form-layout, .info-layout, .premium-home-layout { grid-template-columns: 1fr; }
     }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">L</div>
+        <div>LegalFlow</div>
+      </div>
 
-    /* LAYOUT PRINCIPAL */
-    .main-layout {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 15px;
-    }
+      <div class="top-center-nav">
+        <a class="service-nav-item" id="navInicio"><div class="service-icon">⌂</div><span>Inicio</span></a>
+        <a class="service-nav-item" id="navServicios"><div class="service-icon">≣</div><span>Servicios</span></a>
+        <a class="service-nav-item" id="navPremium"><div class="service-icon">★</div><span>Premium</span></a>
+      </div>
 
-    /* SIDEBAR IZQUIERDO */
-    .sidebar {
-      background: #f8fafc;
-      border-radius: var(--radius-lg);
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      border: 1px solid #cbd5e1;
-    }
+      <nav class="nav">
+        <a id="navContacto">Contacto</a>
+        <a class="ghost" id="navAreaPrivada">Área privada</a>
+        <a class="user-access" id="navAccesoUsuario">Acceso usuario</a>
+        <a class="primary" id="navRegistro">Regístrate</a>
+      </nav>
+    </header>
 
-    .search-box {
-      display: flex;
-      gap: 5px;
-      margin-bottom: 10px;
-    }
+    <main class="layout">
+      <aside class="panel sidebar" id="servicios">
+        <div class="label">Buscador</div>
+        <div class="search-wrap">
+          <div class="search">Buscar servicio...</div>
+          <button class="search-btn" aria-label="Buscar">⌕</button>
+        </div>
+        <div class="label" style="margin-top:4px;">Carta de servicios</div>
+        <div class="services-grid">
+          <a class="service-card" id="srvLetrados" style="background: linear-gradient(135deg, #f2f7f5, #e3ede9); border-color: #b8d4c9; color: #173d30;">Acceso letrados · Tarjeta ACA</a>
+          <a class="service-card" id="srvMenor2000">Reclamaciones menos 2.000 €</a>
+          <a class="service-card" id="srvMayor2000">Reclamaciones más 2.000 €</a>
+          <a class="service-card" id="srvComunicaciones">Comunicaciones fehacientes</a>
+          <a class="service-card" id="srvPremasc">PREMASC. Ley 1/2025</a>
+          <a class="service-card" id="srvInformesSolvencia">Informes de solvencia</a>
+          <a class="service-card" id="srvFicherosSolvencia">Ficheros de solvencia</a>
+          <a class="service-card" id="srvPack">Pack de servicios</a>
+          <a class="service-card" id="srvAutonomos">Autónomos y empresas</a>
+          <a class="service-card" id="srv7">Asesoría jurídica premium</a>
+        </div>
+      </aside>
 
-    .search-box input {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid #cbd5e1;
-      font-size: 0.85rem;
-      background: #ffffff;
-    }
+      <section class="panel main" id="inicio">
+        <div class="hero">
+          <div class="copy">
+            <div class="eyebrow">Gestión jurídica y reclamaciones con trazabilidad</div>
+            <h1>Gestiona comunicaciones y reclamaciones con rigor jurídico</h1>
+            <p class="sub">Centraliza tus comunicaciones, tramita reclamaciones de cantidad y accede a un entorno con seguimiento, orden y opciones premium.</p>
+            <div class="trust-row">
+              <div class="trust-pill">Asistencia especializada</div>
+              <div class="trust-pill">Entorno seguro</div>
+              <div class="trust-pill">Seguimiento documental</div>
+            </div>
+            <a class="cta" id="btnRegistroCta">Regístrate</a>
+          </div>
 
-    .search-box button {
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: var(--radius-sm);
-      padding: 0 12px;
-      cursor: pointer;
-    }
+          <div class="right-stack" id="premium">
+            <div class="vertical-card premium-card" id="cardPremium">
+              <div>
+                <div class="premium-small">Clientes premium</div>
+                <div class="premium-title">Clientes <span>Premium</span></div>
+              </div>
+              <div class="pill">Atención prioritaria</div>
+            </div>
+            <div class="vertical-card">
+              <div class="placeholder-title">Estado de expediente</div>
+              <div class="status-box">
+                <div class="status-item">
+                  <strong>Documentación recibida</strong>
+                  <span>Expediente completado y pendiente de revisión.</span>
+                </div>
+                <div class="status-item">
+                  <strong>Siguiente actuación</strong>
+                  <span>Validación jurídica y preparación.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    .sidebar-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+        <div class="features">
+          <div class="feature" id="homeVideos">
+            <div class="kicker">Bloque 01</div>
+            <h3>Vídeos y tutoriales</h3>
+            <p>Guías prácticas explicativas sobre los trámites.</p>
+          </div>
+          <div class="feature" id="homeValor">
+            <div class="kicker">Bloque 02</div>
+            <h3>Propuestas de valor</h3>
+            <p>Servicios optimizados con estándares de calidad.</p>
+          </div>
+          <div class="feature" id="homeCastaras">
+            <div class="kicker">Bloque 03</div>
+            <h3>Fundación Benéfica</h3>
+            <p>Iniciativas sociales e impacto comunitario positivo.</p>
+          </div>
+        </div>
 
-    .sidebar-item {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      padding: 12px 16px;
-      border-radius: var(--radius-pill);
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      text-decoration: none;
-    }
+        <!-- FOOTER LEGAL INSTITUCIONAL -->
+        <footer class="footer-legal">
+          <div>© 2026 LegalFlow S.L. · Todos los derechos reservados.</div>
+          <div class="footer-legal-links">
+            <a href="#" id="linkAviso">Aviso Legal</a>
+            <a href="#" id="linkPrivacidad">Política de Privacidad</a>
+            <a href="#" id="linkCookies">Política de Cookies</a>
+            <a href="#" id="linkTerminos">Términos y Condiciones</a>
+          </div>
+        </footer>
+      </section>
+    </main>
+  </div>
 
-    /* DASHBOARD CENTRAL */
-    .dashboard {
-      background: #f8fafc;
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      border: 1px solid #cbd5e1;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+  <!-- =============================== -->
+  <!-- MODALES Y VENTANAS EMERGENTES -->
+  <!-- =============================== -->
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 240px;
-      gap: 15px;
-    }
+  <!-- ACCESO LETRADOS · TARJETA ACA -->
+  <div class="form-page" id="letradosPage">
+    <div class="form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Acceso profesional</div><h2 style="margin:0;font-size:18px;">Área exclusiva de Letrados y Abogados</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="judicial-form">
+        <h2 style="margin:0 0 10px; font-size: 26px; color:#173d30;">Identificación Oficial con Tarjeta ACA</h2>
+        <p style="color:#615b50; font-size:13.5px; line-height:1.5; margin-bottom:14px;">
+          Bienvenido al entorno profesional certificado de LegalFlow. Un espacio dotado de máximo rigor, trazabilidad absoluta, seguridad jurídica garantizada y estructuración centralizada por expedientes colegiados.
+        </p>
+        <div class="form-block" style="background:#f4efe6; border-color:#dfd4c3; text-align:center; padding:24px;">
+          <h3 style="margin-bottom:8px;">Inserte su tarjeta criptográfica o identifíquese mediante credencial homologada</h3>
+          <p style="font-size:12.5px; color:#6b6255; margin-bottom:16px;">Conecte su lector USB con la Tarjeta de la Abogacía Española (ACA / ACA Plus).</p>
+          <button class="comm-btn" id="btnSimularCard" style="max-width:280px; margin:0 auto; background:linear-gradient(135deg,#0f696b,#0b4f52);">Simular lectura de Tarjeta ACA</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    .hero-card {
-      background: #ffffff;
-      border-radius: var(--radius-lg);
-      padding: 30px;
-      border: 1px solid #e2e8f0;
-    }
+  <!-- SERVICIOS CATALOGO -->
+  <div class="info-page" id="serviciosPage">
+    <div class="info-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Catálogo</div><h2 style="margin:0;font-size:18px;">Todos los servicios</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="info-main">
+        <h2 style="margin:0 0 10px;">Catálogo completo de trámites</h2>
+        <p style="color:#615b50; margin-bottom:18px;">Seleccione cualquiera de nuestras áreas de práctica o asistencia jurídica y documental.</p>
+        <div class="video-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="action-card"><strong>Reclamaciones -2.000 €</strong><p>Tramitación guiada para cuantías reducidas.</p></div>
+          <div class="action-card"><strong>Reclamaciones +2.000 €</strong><p>Gestión de expedientes con mayor alcance.</p></div>
+          <div class="action-card"><strong>Comunicaciones fehacientes</strong><p>Requerimientos, respuestas y avisos formales.</p></div>
+          <div class="action-card"><strong>PREMASC</strong><p>Procedimientos y circuitos ley 1/2025.</p></div>
+          <div class="action-card"><strong>Informes de solvencia</strong><p>Consulta y preparación de informes.</p></div>
+          <div class="action-card"><strong>Ficheros de solvencia</strong><p>Inclusión y gestión de morosidad.</p></div>
+          <div class="action-card"><strong>Pack de servicios</strong><p>Paquetes orientados a ahorro e integralidad.</p></div>
+          <div class="action-card"><strong>Autónomos y empresas</strong><p>Módulo de soluciones B2B.</p></div>
+          <div class="action-card" style="background: linear-gradient(180deg,#f8f5ee 0%,#f0ebe1 100%);"><strong>Asesoría premium</strong><p>Acompañamiento reforzado y estratégico.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    .hero-subtitle {
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
+  <!-- CONTACTO -->
+  <div class="form-page" id="contactoPage">
+    <div class="form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Contacto email</div><h2 style="margin:0;font-size:18px;">Formulario de contacto</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="judicial-form">
+        <h2 style="margin:0 0 10px; font-size: 28px;">Formulario de contacto</h2>
+        <p style="color:#615b50; font-size:13px; margin-bottom:14px;">Rellena tus datos personales, correo electrónico y haznos llegar tus comentarios.</p>
+        <div class="form-block">
+          <div class="field-grid">
+            <div class="field"><label>Nombre y apellidos</label><input type="text" placeholder="Tu nombre"></div>
+            <div class="field"><label>Correo electrónico</label><input type="email" placeholder="Tu email"></div>
+            <div class="field full"><label>Comentarios</label><textarea placeholder="Escribe aquí tu mensaje o duda..."></textarea></div>
+          </div>
+          <button class="comm-btn" style="max-width:200px; margin-top:14px;">Enviar mensaje</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    .hero-ti
+  <!-- ACCESO USUARIO -->
+  <div class="user-page" id="userAccessPage">
+    <div class="user-shell">
+      <div class="user-card">
+        <div class="form-toolbar">
+          <div><div class="window-kicker">Acceso usuario</div><h2 style="margin:0;font-size:18px;">Área privada</h2></div>
+          <button class="close-top-page">Volver</button>
+        </div>
+        <h2 style="margin:0 0 6px;">Acceso de usuario</h2>
+        <p style="color:var(--muted); font-size:13px; margin-bottom:14px;">Introduzca sus credenciales para acceder a su expediente, documentación y seguimiento privado.</p>
+        <div class="form-block">
+          <div class="field-grid">
+            <div class="field full"><label>Usuario</label><input type="text" placeholder="Nombre de usuario"></div>
+            <div class="field full"><label>Contraseña</label><input type="password" placeholder="Contraseña"></div>
+          </div>
+          <div style="display:flex; gap:16px; margin-top:12px;">
+            <button id="btnForgotUser" style="background:none; border:none; color:var(--teal); font-weight:700; text-decoration:underline; font-size:12px;">Olvidó su usuario</button>
+            <button id="btnForgotPass" style="background:none; border:none; color:var(--teal); font-weight:700; text-decoration:underline; font-size:12px;">Olvidó su contraseña</button>
+          </div>
+          <button class="comm-btn" id="btnEntrarLogin" style="margin-top:14px; max-width:200px;">Entrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD / MIS EXPEDIENTES (REORGANIZADO CON EXPEDIENTES PRIMERO) -->
+  <div class="info-page" id="dashboardPage">
+    <div class="info-shell" style="max-width:1120px;">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Área privada / Profesional</div><h2 style="margin:0;font-size:18px;">Panel de control y seguimiento</h2></div>
+        <button class="close-top-page">Cerrar sesión</button>
+      </div>
+      <div class="info-layout" style="grid-template-columns: 1fr;">
+        <section class="info-main">
+          <h2 style="margin:0 0 14px; font-size: 26px;">Gestión integral de expedientes</h2>
+          
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:24px;">
+            <div class="action-card" id="cardExpedientesTotal" style="background:#f4efe6; border-color:#dfd4c3; cursor:pointer;">
+              <h3 style="font-size:24px; margin:0 0 4px; color:var(--teal);">6</h3>
+              <p style="font-weight:700;">Expedientes</p>
+            </div>
+            <div class="action-card" id="cardCasosPendientes" style="background:#f4efe6; border-color:#dfd4c3; cursor:pointer;">
+              <h3 style="font-size:24px; margin:0 0 4px; color:#b07d3b;">1</h3>
+              <p style="font-weight:700;">Casos pendientes</p>
+            </div>
+            <div class="action-card" id="cardCasosActivos" style="background:#f4efe6; border-color:#dfd4c3; cursor:pointer;">
+              <h3 style="font-size:24px; margin:0 0 4px; color:#173d30;">3</h3>
+              <p style="font-weight:700;">Casos activos</p>
+            </div>
+          </div>
+
+          <h3 style="margin:0 0 10px;">Listado numerado de expedientes del cliente</h3>
+          <div class="doc-list">
+            <div class="doc-item" style="display:flex; justify-content:space-between; align-items:center; padding:14px;">
+              <div>
+                <strong style="display:block; font-size:14px; margin-bottom:4px;">Expediente #EXP-2026-001</strong>
+                <span style="color:#665f53;">Reclamación inferior a 2.000 € (Demanda sucinta)</span>
+              </div>
+              <span class="pill" style="background:#e4f3e8; color:#173d30; border-color:#c8e6d0;">En revisión jurídica</span>
+            </div>
+            <div class="doc-item" style="display:flex; justify-content:space-between; align-items:center; padding:14px;">
+              <div>
+                <strong style="display:block; font-size:14px; margin-bottom:4px;">Expediente #EXP-2026-042</strong>
+                <span style="color:#665f53;">Comunicación fehaciente (Burofax)</span>
+              </div>
+              <span class="pill" style="background:#f4efe6; color:#8a6d3b; border-color:#e0d7cb;">Pendiente de envío</span>
+            </div>
+            <div class="doc-item" style="display:flex; justify-content:space-between; align-items:center; padding:14px;">
+              <div>
+                <strong style="display:block; font-size:14px; margin-bottom:4px;">Expediente #EXP-2026-089</strong>
+                <span style="color:#665f53;">PREMASC · Propuesta vinculante</span>
+              </div>
+              <span class="pill" style="background:#e4f3e8; color:#173d30; border-color:#c8e6d0;">Entregado a contraparte</span>
+            </div>
+            <div class="doc-item" style="display:flex; justify-content:space-between; align-items:center; padding:14px;">
+              <div>
+                <strong style="display:block; font-size:14px; margin-bottom:4px;">Expediente #EXP-2026-104</strong>
+                <span style="color:#665f53;">Informe de solvencia patrimonial</span>
+              </div>
+              <span class="pill" style="background:#e4f3e8; color:#173d30; border-color:#c8e6d0;">Finalizado</span>
+            </div>
+            <div class="doc-item" style="display:flex; justify-content:space-between; align-items:center; padding:14px;">
+              <div>
+                <strong style="display:block; font-size:14px; margin-bottom:4px;">Expediente #EXP-2026-155</strong>
+                <span style="color:#665f53;">Reclamación judicial superior a 2.000 €</span>
+              </div>
+              <span class="pill" style="background:#f4efe6; color:#8a6d3b; border-color:#e0d7cb;">En tramitación</span>
+            </div>
+            <div class="doc-item" style="display:flex; justify-content:space-between; align-items:center; padding:14px;">
+              <div>
+                <strong style="display:block; font-size:14px; margin-bottom:4px;">Expediente #EXP-2026-210</strong>
+                <span style="color:#665f53;">Mediación extrajudicial</span>
+              </div>
+              <span class="pill" style="background:#e4f3e8; color:#173d30; border-color:#c8e6d0;">Activo</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DINÁMICO PARA DETALLE DE CASOS / EXPEDIENTES -->
+  <div class="form-page" id="detalleCasosPage">
+    <div class="form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker" id="detalleKicker">Filtrado de casos</div><h2 style="margin:0;font-size:18px;" id="detalleTitulo">Detalle de elementos</h2></div>
+        <button class="close-top-page">Volver al panel</button>
+      </div>
+      <div class="judicial-form">
+        <h2 style="margin:0 0 10px; font-size: 24px;" id="detalleSubtitulo">Desglose de registros</h2>
+        <div id="detalleContenido" class="doc-list" style="margin-top:14px;">
+          <!-- Contenido inyectado dinámicamente -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTRO -->
+  <div class="user-page" id="registroPage">
+    <div class="user-shell">
+      <div class="user-card">
+        <div class="form-toolbar">
+          <div><div class="window-kicker">Alta nuevo usuario</div><h2 style="margin:0;font-size:18px;">Registro</h2></div>
+          <button class="close-top-page">Volver</button>
+        </div>
+        <h2 style="margin:0 0 6px;">Crea tu cuenta</h2>
+        <p style="color:var(--muted); font-size:13px; margin-bottom:14px;">Date de alta para guardar tus expedientes y hacer seguimiento.</p>
+        <div class="form-block">
+          <button class="comm-btn" style="margin-top:14px; max-width:200px;">Registrarse / Entrar</button>
+          <div class="submit-band" style="margin-top:20px; background:#f5efe6; border:1px dashed #dfd4c3;">
+            <strong style="color:#8a6d3b; font-size:12px;">Nota interna:</strong>
+            <p class="form-note" style="margin:0;">Aquí se debe de ir el formulario para el registro de acceso.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECUPERACIÓN ACCESO -->
+  <div class="recovery-page" id="recoveryPage">
+    <div class="recovery-shell">
+      <div class="recovery-card">
+        <div class="form-toolbar">
+          <div><div class="window-kicker">Recuperación</div><h2 style="margin:0;font-size:18px;">Recuperar acceso</h2></div>
+          <button class="close-top-page">Volver</button>
+        </div>
+        <h2 style="margin:0 0 6px;">Indique su correo electrónico</h2>
+        <p style="color:var(--muted); font-size:13px; margin-bottom:14px;">Le enviaremos un enlace para restablecer su usuario o su contraseña, según la opción seleccionada.</p>
+        <div class="form-block">
+          <div class="field-grid">
+            <div class="field full"><label>Correo electrónico</label><input type="email" placeholder="Correo electrónico"></div>
+          </div>
+          <button class="comm-btn" style="margin-top:14px; max-width:280px;">Enviar enlace de restablecimiento</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTÓNOMOS Y EMPRESAS -->
+  <div class="info-page" id="autonomosPage" style="background:#eef2f5;">
+    <div class="info-shell" style="max-width: 1120px;">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Empresas</div><h2 style="margin:0;font-size:18px;">Autónomos y empresas</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 240px 1fr; gap: 20px; align-items: start;">
+        <aside style="display: flex; flex-direction: column; gap: 10px;">
+          <button class="pack-btn btnPack">Pack 1</button>
+          <button class="pack-btn btnPack">Pack 2</button>
+          <button class="pack-btn btnPack">Pack 3</button>
+          <button class="pack-btn btnPack">Pack 4</button>
+          <button class="pack-btn btnPack">Pack 5</button>
+        </aside>
+        <section class="info-main" style="background: #fff;">
+          <h2 style="margin:0 0 10px; font-size: 28px;">Servicios integrales B2B</h2>
+          <p style="font-size: 14.5px; line-height: 1.6; color: #444;">
+            Aquí se ofrecen paquetes y productos específicos para autónomos y empresas.
+          </p>
+          <div style="margin-top:20px; padding:20px; background:#fbfaf7; border:1px dashed #dcd7ce; border-radius:14px;">
+            <p style="margin:0; color:#888;">Selecciona un Pack en el menú de la izquierda para ver su detalle.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANTA DE DETALLE DE PACK -->
+  <div class="form-page" id="packDetailPage">
+    <div class="form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Detalle de producto</div><h2 style="margin:0;font-size:18px;">Configuración del Pack</h2></div>
+        <button class="close-top-page">Volver</button>
+      </div>
+      <div class="judicial-form">
+        <h2 style="margin:0 0 10px; font-size: 28px;">Detalle del paquete seleccionado</h2>
+        <p style="color:#615b50; font-size:14px; margin-bottom:14px;">Esta es una ventana genérica que se abre al pinchar en cualquier Pack. Aquí iría el contenido específico de cada uno de ellos.</p>
+        <button class="comm-btn" style="max-width:200px;">Contratar Pack</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN PREMIUM -->
+  <div class="premium-home-page" id="premiumHomePage">
+    <div class="premium-home-shell">
+      <div class="form-toolbar" style="color:#f4ede3">
+        <div><div class="window-kicker" style="color:#f1d7a1">Clientes premium</div><h2 style="margin:0;font-size:18px;">Atención jurídica selecta</h2></div>
+        <button class="close-top-page" style="background:rgba(255,249,241,.12); color:#fff; border:1px solid rgba(255,241,221,.18)">Volver a inicio</button>
+      </div>
+      <div class="premium-home-layout">
+        <section class="premium-home-main">
+          <span class="premium-badge">Sección premium</span>
+          <h2 style="margin:0 0 10px; font-size:22px;">Un entorno pensado para clientes de alto valor que exigen trato excelente, reserva y capacidad jurídica real.</h2>
+          <p style="color:#eadfce; line-height:1.5;">Contamos con un bufete jurídico orientado a perfiles que necesitan una atención más cuidada, más estratégica y más personalizada. Este entorno premium está concebido para clientes que valoran la solvencia profesional, la rapidez de respuesta, la discreción y un acompañamiento jurídico a la altura de asuntos especialmente sensibles o patrimonialmente relevantes.</p>
+          <p style="color:#eadfce; line-height:1.5;">Asimismo, incorporamos un servicio de mediación especializado y una vía de asistencia reforzada para conflictos complejos, negociación de alto nivel y situaciones en las que el cliente necesita sentirse especialmente protegido y bien atendido en cada fase del proceso.</p>
+        </section>
+        <aside class="premium-home-side">
+          <article class="premium-home-side-card">
+            <h3 style="margin:0 0 8px;font-size:16px;color:#fff">Boutique legal y mediación premium</h3>
+            <p style="color:#eadfce;">La propuesta premium combina excelencia jurídica, trato preferente y posibilidad de derivación a profesionales especializados cuando el caso lo aconseje.</p>
+          </article>
+          <article class="premium-home-side-card">
+            <h3 style="margin:0 0 8px;font-size:16px;color:#fff">Experiencia diferenciada</h3>
+            <p style="color:#eadfce;">Se proyecta una experiencia más exclusiva, más atenta y orientada a clientes que esperan un nivel superior de confianza, representación y cuidado reputacional.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- VÍDEOS Y TUTORIALES -->
+  <div class="info-page" id="videosPage">
+    <div class="info-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Vídeos y tutoriales</div><h2 style="margin:0;font-size:18px;">Biblioteca visual de apoyo</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="info-main">
+        <h2 style="margin:0 0 8px;">Vídeos y tutoriales para explicar de forma visual cómo funciona cada servicio de la plataforma.</h2>
+        <p style="color:var(--muted); font-size:13px; margin-bottom:14px;">Esta ventana reúne materiales orientativos para acompañar al usuario paso a paso. Cada vídeo servirá para explicar de manera práctica qué hace cada servicio, cómo se utiliza y qué recorrido puede seguir el cliente dentro de LegalFlow.</p>
+        <div class="video-grid">
+          <div class="video-item"><div class="video-thumb">▶</div><div>Reclamación menos 2.000 €</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Reclamación más 2.000 €</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Comunicaciones fehacientes</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>PREMASC · Ley 1/2025</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Certificado de solvencia</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Consultar solvencia ajena</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Fichero de solvencia</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Fichero de morosos</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Servicios jurídicos premium</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Mediación especializada</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Área privada de usuario</div></div>
+          <div class="video-item"><div class="video-thumb">▶</div><div>Seguimiento de expediente</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPUESTAS DE VALOR -->
+  <div class="info-page" id="valorPage">
+    <div class="info-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Solvencia, alcance y atención personalizada</div><h2 style="margin:0;font-size:18px;">Propuesta institucional de alto valor</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="info-layout">
+        <section class="info-main">
+          <h2 style="margin:0 0 10px;">Una plataforma solvente, transversal y preparada para atender desde trámites masivos hasta asuntos de especial sensibilidad.</h2>
+          <p style="color:#5f594e; line-height:1.5;">Nuestra propuesta de valor combina amplitud de servicios, tecnología aplicada, acompañamiento operativo y una visión práctica del acceso a la justicia. Atendemos un espectro amplio de necesidades: desde reclamaciones de pequeña cuantía y comunicaciones fehacientes, hasta circuitos prejudiciales avanzados, solvencia, mediación y apoyo premium cuando la complejidad del caso lo exige.</p>
+          <p style="color:#5f594e; line-height:1.5;">La plataforma está diseñada para responder con eficiencia, pero también con una capa de trato personalizado para perfiles que demandan un servicio más selectivo, más reservado y con continuidad jurídica de alto nivel.</p>
+        </section>
+        <aside class="info-side">
+          <article class="info-card">
+            <h3>Colaboración jurídica de referencia</h3>
+            <p>Contamos con la colaboración de Vessel Legal y con el apoyo de los servicios jurídicos de Óscar Ruiz y Javier Puyol, tanto para mediación en conflictos como para la atención de clientes de alto valor que requieran una asistencia premium más especializada.</p>
+          </article>
+          <article class="info-card">
+            <h3>Escalabilidad con criterio</h3>
+            <p>Esto permite que un usuario pueda iniciar un trámite sencillo y, si el asunto evoluciona, acceder sin fricción a una estructura jurídica de mayor peso y mayor personalización.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNDACIÓN BENÉFICA -->
+  <div class="info-page" id="castarasPage">
+    <div class="info-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Compromiso Social</div><h2 style="margin:0;font-size:18px;">Fundación Benéfica</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="info-layout">
+        <section class="info-main">
+          <h2 style="margin:0 0 10px;">Fundación Benéfica</h2>
+          <p style="font-size:13.5px; line-height:1.5; color:#444;">
+            Colaboramos activamente con la <strong>Fundación Benéfica Tomás Almendros Almendros</strong> en el desarrollo de proyectos orientados a la asistencia, protección y desarrollo social. Creemos que la innovación jurídica debe ir acompañada de una sólida dimensión humana.
+          </p>
+          <p style="font-size:13.5px; line-height:1.5; color:#444;">
+            Esta colaboración representa una forma de trasladar al terreno social los valores que inspiran nuestro proyecto: acompañamiento, responsabilidad, utilidad real y sensibilidad hacia quienes más apoyo necesitan.
+          </p>
+        </section>
+        <aside class="info-side">
+          <article class="info-card">
+            <h3>Motivo de la colaboración</h3>
+            <p>Queremos que una parte del crecimiento del proyecto esté vinculada a acciones que transmitan confianza, arraigo y apoyo social a quienes más lo necesitan.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULARIO MENOS 2000 € (TARJETAS LATERALES AMPLIADAS Y MÁS ESTRECHAS) -->
+  <div class="form-page" id="menor2000Page">
+    <div class="form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Reclamaciones judiciales</div><h2 style="margin:0;font-size:18px;">Demanda sucinta de juicio verbal inferior a 2.000 €</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="form-layout" style="grid-template-columns: minmax(0, 1fr) 340px;">
+        <section class="judicial-form">
+          <h2 style="margin:0 0 6px;">Formulario base</h2>
+          <p style="color:#615b50; font-size:12.5px; margin-bottom:14px;">Modelo inspirado en el formulario normalizado para reclamaciones de cantidad de cuantía inferior a 2.000 €, pensado para recoger los datos del demandante, del demandado, los hechos, la cantidad reclamada, los documentos y la petición final al juzgado.</p>
+
+          <div class="form-block">
+            <h3>1. Datos del demandante</h3>
+            <div class="field-grid">
+              <div class="field"><label>Nombre y apellidos</label><input type="text" placeholder="Nombre completo del reclamante"></div>
+              <div class="field"><label>DNI / NIE</label><input type="text" placeholder="Documento identificativo"></div>
+              <div class="field"><label>Domicilio</label><input type="text" placeholder="Calle, número, piso"></div>
+              <div class="field"><label>Municipio y CP</label><input type="text" placeholder="Municipio y CP"></div>
+              <div class="field"><label>Teléfono</label><input type="text" placeholder="Teléfono de contacto"></div>
+              <div class="field"><label>Correo electrónico</label><input type="email" placeholder="Correo electrónico"></div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>2. Datos del demandado</h3>
+            <div class="field-grid">
+              <div class="field"><label>Nombre o razón social</label><input type="text" placeholder="Persona o empresa demandada"></div>
+              <div class="field"><label>NIF / CIF si se conoce</label><input type="text" placeholder="Dato opcional"></div>
+              <div class="field full"><label>Domicilio del demandado</label><input type="text" placeholder="Dirección donde puede ser localizado"></div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>3. Hechos de la reclamación</h3>
+            <div class="field-grid">
+              <div class="field full"><label>Qué ocurrió</label><textarea placeholder="Describe qué pasó y por qué te deben dinero"></textarea></div>
+              <div class="field"><label>Fecha de origen</label><input type="text" placeholder="Fecha aproximada"></div>
+              <div class="field"><label>Reclamación previa</label><input type="text" placeholder="Burofax, email, etc."></div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>4. Cantidad reclamada</h3>
+            <div class="field-grid">
+              <div class="field"><label>Importe principal</label><input type="text" placeholder="Ej.: 1.245,60 €"></div>
+              <div class="field"><label>Concepto</label><input type="text" placeholder="Factura, servicio, etc."></div>
+              <div class="field full"><label>Cálculo de la deuda</label><textarea placeholder="Explica de dónde sale la cantidad"></textarea></div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>5. Documentos adjuntos</h3>
+            <div class="doc-list">
+              <div class="doc-item">Contrato, presupuesto o pedido.</div>
+              <div class="doc-item">Facturas, recibos o justificantes de pago.</div>
+              <div class="doc-item">Correos, mensajes o comunicaciones previas.</div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>6. Petición al juzgado</h3>
+            <div class="field-grid">
+              <div class="field full"><label>Solicitud final</label><textarea placeholder="Solicito que se condene al demandado al pago de la cantidad reclamada..."></textarea></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TARJETAS LATERALES AMPLIADAS Y MÁS COMPACTAS EN ALTURA -->
+        <aside class="action-stack" style="gap: 8px;">
+          <article class="action-card" style="padding: 10px 12px;">
+            <h3 style="margin: 0 0 2px; font-size: 13.5px;">Proceso recomendado</h3>
+            <p style="font-size: 10.5px; line-height: 1.25;">Hemos diseñado un proceso automático de reclamación de deuda con informe notarial que acredita nuestro intento amistoso de llegar a un acuerdo antes de la vía judicial. Una vez finalizado y realizado este procedimiento, recomendamos</p>
+            <button class="validate-btn" id="goPremaskFromMenor" style="margin-top: 4px; padding: 6px 12px; font-size: 11.5px;">Probar PREMASC</button>
+          </article>
+          
+          <article class="action-card" style="padding: 10px 12px;">
+            <h3 style="margin: 0 0 2px; font-size: 13.5px;">Inclusión en base de solvencia</h3>
+            <div class="action-price" style="font-size: 9.5px;">(Fichero de morosos) · 50 €</div>
+            <p style="font-size: 10.5px; line-height: 1.25; margin-top: 2px;">Solicitar inclusión en fichero de solvencia crediticia tras comprobar requisitos legales.</p>
+            <label class="selection-box" style="margin-top: 4px; padding: 4px 6px;"><input type="checkbox"><span style="font-size: 10.5px;">Seleccionar servicio <strong>(RECOMENDADO)</strong></span></label>
+          </article>
+          
+          <article class="action-card" style="padding: 10px 12px;">
+            <h3 style="margin: 0 0 2px; font-size: 13.5px;">Validación Jurídica</h3>
+            <div class="action-price" style="font-size: 9.5px;">Revisión por abogados · 50 €</div>
+            <p style="font-size: 10.5px; line-height: 1.25; margin-top: 2px;">Nuestro equipo jurídico revisará la demanda antes de ser presentada.</p>
+            <label class="selection-box" style="margin-top: 4px; padding: 4px 6px;"><input type="checkbox"><span style="font-size: 10.5px;">Seleccionar revisión</span></label>
+          </article>
+          
+          <article class="action-card" style="padding: 10px 12px;">
+            <h3 style="margin: 0 0 2px; font-size: 13.5px;">Generar documento</h3>
+            <div class="action-price" style="font-size: 9.5px;">Gratuito</div>
+            <p style="font-size: 10.5px; line-height: 1.25; margin-top: 2px;">Genera el documento oficial para imprimir o presentar digitalmente.</p>
+            <button class="ghost-btn" style="width: 100%; margin-top: 4px; padding: 6px 12px; font-size: 11.5px;">Generar documento</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULARIO MÁS 2000 € -->
+  <div class="highclaim-page" id="mayor2000Page">
+    <div class="highclaim-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Reclamaciones superiores a 2.000 €</div><h2 style="margin:0;font-size:18px;">Vía previa obligatoria de intento de acuerdo</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="highclaim-hero">
+        <section class="highclaim-main">
+          <h2 style="margin:0 0 10px;">Antes de demandar, la ley exige intentar un acuerdo previo.</h2>
+          <p style="color:#615b50;">Para reclamaciones de más de 2.000 €, ofrecemos solventar este trámite previo sin necesidad inicial de abogado ni procurador, alcanzando acuerdos que eviten la vía judicial.</p>
+          <div class="highclaim-band">
+            <article class="highclaim-point"><strong>Qué hacemos:</strong> Intermediamos lanzando una oferta vinculante por conducto fehaciente.</article>
+            <article class="highclaim-point"><strong>Resultado documentado:</strong> Elaboramos informe con validez notarial y sello de tiempo cualificado.</article>
+            <article class="highclaim-point"><strong>Utilidad posterior:</strong> Sirve de prueba de pacto o como acreditación formal para la demanda judicial.</article>
+          </div>
+        </section>
+        <aside class="highclaim-side">
+          <article class="highclaim-card">
+            <h3>Comenzar trámite</h3>
+            <p>Inicie el circuito PREMASC con propuesta fehaciente e informe acreditativo.</p>
+            <button class="begin-btn" id="goPremaskMayor2000">Comenzar PREMASC</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMUNICACIONES FEHACIENTES -->
+  <div class="comm-page" id="comunicacionesPage">
+    <div class="comm-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Comunicaciones fehacientes</div><h2 style="margin:0;font-size:18px;">Servicio LegalFlow</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="comm-layout">
+        <section class="comm-main">
+          <h2 style="margin:0 0 10px;">Servicio de comunicaciones fehacientes de LegalFlow.</h2>
+          <p style="color:#615b50;">Remita comunicaciones fehacientes para dejar constancia acreditada de hechos y preparar acciones futuras con máxima solidez documental.</p>
+          <div class="comm-points">
+            <article class="comm-point"><strong>Constancia acreditada:</strong> Prueba documental con certificado de contenido, emisor, destinatario y fecha.</article>
+            <article class="comm-point"><strong>Vía previa PREMASC:</strong> Permite asociar una propuesta vinculante para cumplir la fase prejudicial.</article>
+          </div>
+        </section>
+        <aside class="comm-side">
+          <article class="comm-card">
+            <h3>Documento con valor notarial (Recomendado)</h3>
+            <p>Opción reforzada con trazabilidad y fuerza probatoria completa.</p>
+            <button class="comm-btn" id="goPremaskComms">Ir a PREMASC</button>
+          </article>
+          <article class="comm-card">
+            <h3>Burofax Estándar</h3>
+            <p>Envío de burofax fehaciente tradicional.</p>
+            <button class="comm-btn" id="goSimpleComms">Ir a Burofax</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUROFAX -->
+  <div class="burofax-page" id="burofaxPage">
+    <div class="burofax-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Comunicación fehaciente</div><h2 style="margin:0;font-size:18px;">Formulario base de burofax</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="burofax-layout">
+        <section class="burofax-main">
+          <h2 style="margin:0 0 10px;">Enviar Burofax Fehaciente</h2>
+          <div class="form-block">
+            <h3>1. Remitente</h3>
+            <div class="field-grid">
+              <div class="field"><label>Nombre</label><input type="text" placeholder="Nombre completo"></div>
+              <div class="field"><label>DNI / NIE</label><input type="text" placeholder="Documento"></div>
+            </div>
+          </div>
+          <div class="form-block">
+            <h3>2. Destinatario</h3>
+            <div class="field-grid">
+              <div class="field full"><label>Nombre / Razón social</label><input type="text" placeholder="Destinatario"></div>
+              <div class="field full"><label>Dirección completa</label><input type="text" placeholder="Domicilio de entrega"></div>
+            </div>
+          </div>
+          <div class="form-block">
+            <h3>3. Mensaje / Contenido</h3>
+            <div class="field full"><label>Texto de la comunicación</label><textarea placeholder="Escriba el mensaje fehaciente que desea enviar..."></textarea></div>
+          </div>
+        </section>
+        <aside class="burofax-side">
+          <article class="burofax-action">
+            <h3>Validar y enviar</h3>
+            <p>Se emitirá el documento y se le notificará la entrega con acuse de recibo.</p>
+            <button class="comm-btn">Enviar comunicación</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMASC PAGE -->
+  <div class="premasc-page" id="premascPage">
+    <div class="premasc-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">PREMASC · Ley 1/2025</div><h2 style="margin:0;font-size:18px;">Procedimiento previo y solución amistosa</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="premasc-layout">
+        <section class="premasc-main">
+          <h2 style="margin:0 0 10px;">PREMASC: trámite previo imprescindible antes de muchas reclamaciones judiciales.</h2>
+          <p style="color:#615b50;">Cumpla con la Ley 1/2025 articulando una propuesta vinculante de acuerdo amistoso sin necesidad inicial de abogado ni procurador.</p>
+          <div class="premasc-points">
+            <article class="premasc-point"><strong>Propuesta vinculante:</strong> No es un simple aviso; lanza un canal formal de aceptación o rechazo.</article>
+            <article class="premasc-point"><strong>Informe certificado:</strong> Emisión de informe con sello cualificado válido ante tribunales.</article>
+          </div>
+        </section>
+        <aside class="premasc-side">
+          <article class="premasc-card">
+            <h3>Comenzar procedimiento</h3>
+            <p>Rellene los datos para generar la propuesta fehaciente PREMASC.</p>
+            <button class="comm-btn" id="startPremascFlow">Iniciar PREMASC</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMASC FORMULARIO FEHACIENTE -->
+  <div class="premasc-form-page" id="premascFehacientePage">
+    <div class="premasc-form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">PREMASC · Documento fehaciente</div><h2 style="margin:0;font-size:18px;">Formulario para propuesta vinculante</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="premasc-form-layout">
+        <section class="burofax-main">
+          <h2 style="margin:0 0 10px;">Formulario autorrellenable PREMASC</h2>
+          <div class="form-block">
+            <h3>1. Tus datos</h3>
+            <div class="field-grid">
+              <div class="field"><label>Nombre</label><input type="text" placeholder="Nombre completo"></div>
+              <div class="field"><label>DNI</label><input type="text" placeholder="DNI / NIE"></div>
+            </div>
+          </div>
+          <div class="form-block">
+            <h3>2. Parte contraria</h3>
+            <div class="field-grid">
+              <div class="field full"><label>Nombre o empresa</label><input type="text" placeholder="Destinatario"></div>
+              <div class="field full"><label>Dirección</label><input type="text" placeholder="Dirección de la contraparte"></div>
+            </div>
+          </div>
+          <div class="form-block">
+            <h3>3. Propuesta de acuerdo</h3>
+            <div class="field full"><label>Propuesta vinculante</label><textarea placeholder="Indique las condiciones de acuerdo amistoso que propone..."></textarea></div>
+          </div>
+        </section>
+        <aside class="premasc-form-side">
+          <article class="premasc-form-card">
+            <h3>Lanzar propuesta</h3>
+            <p>Se enviará un documento con código QR para que la parte contraria acepte o rechace formalmente.</p>
+            <button class="comm-btn">Validar y enviar propuesta</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFORMES SOLVENCIA -->
+  <div class="solv-page" id="informesSolvenciaPage">
+    <div class="solv-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Informes de solvencia</div><h2 style="margin:0;font-size:18px;">Consulta y acreditación de solvencia</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="solv-layout">
+        <section class="solv-main">
+          <h2 style="margin:0 0 10px;">Informes de solvencia para acreditar confianza o comprobar riesgo.</h2>
+          <p style="color:#615b50;">Certifique su propia capacidad financiera ante terceros o verifique el perfil crediticio e historial de impagos de una persona o empresa antes de firmar un contrato.</p>
+        </section>
+        <aside class="solv-side">
+          <article class="solv-card">
+            <h3>Acreditar solvencia PROPIA</h3>
+            <p>Obtenga su certificado de solvencia para presentar ante arrendadores o entidades.</p>
+            <button class="comm-btn" id="openOwnSolvency">Acreditar mi solvencia</button>
+          </article>
+          <article class="solv-card">
+            <h3>Consultar solvencia de TERCEROS</h3>
+            <p>Consulte el riesgo crediticio de un futuro inquilino, cliente o socio.</p>
+            <button class="comm-btn" id="openOtherSolvency">Consultar a un tercero</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVENCIA PROPIA FORM -->
+  <div class="solv-form-page" id="ownSolvencyPage">
+    <div class="solv-form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Informes de solvencia</div><h2 style="margin:0;font-size:18px;">Acreditar propia solvencia</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="solv-form-layout">
+        <section class="solv-form-main">
+          <h2 style="margin:0 0 10px;">Acreditación de solvencia propia</h2>
+          <div class="form-block">
+            <div class="field-grid">
+              <div class="field"><label>Nombre completo</label><input type="text" placeholder="Tu nombre"></div>
+              <div class="field"><label>DNI / NIE</label><input type="text" placeholder="Documento"></div>
+              <div class="field full"><label>Domicilio</label><input type="text" placeholder="Dirección habitual"></div>
+            </div>
+          </div>
+        </section>
+        <aside class="solv-form-actions">
+          <article class="solv-mini-card">
+            <h3>Generar Certificado</h3>
+            <button class="comm-btn">Solicitar Certificado</button>
+          </article>
+        </aside>
+        <aside class="solv-form-note">
+          <article class="solv-mini-card">
+            <p style="font-size:11px;">El informe se generará tras consultar bases de datos oficiales y registrables.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVENCIA TERCEROS FORM -->
+  <div class="solv-form-page" id="otherSolvencyPage">
+    <div class="solv-form-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Informes de solvencia</div><h2 style="margin:0;font-size:18px;">Consultar solvencia de un tercero</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="solv-form-layout">
+        <section class="solv-form-main">
+          <h2 style="margin:0 0 10px;">Consulta sobre tercera persona o empresa</h2>
+          <div class="form-block">
+            <div class="field-grid">
+              <div class="field"><label>Nombre / Razón Social</label><input type="text" placeholder="Persona o empresa a consultar"></div>
+              <div class="field"><label>DNI / CIF</label><input type="text" placeholder="Documento identificativo"></div>
+            </div>
+          </div>
+        </section>
+        <aside class="solv-form-actions">
+          <article class="solv-mini-card">
+            <h3>Lanzar Consulta</h3>
+            <button class="comm-btn">Obtener Informe</button>
+          </article>
+        </aside>
+        <aside class="solv-form-note">
+          <article class="solv-mini-card">
+            <p style="font-size:11px;">Informe de scoring de riesgo e historial judicial/crediticio.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- FICHEROS SOLVENCIA -->
+  <div class="fich-page" id="ficherosSolvenciaPage">
+    <div class="fich-shell">
+      <div class="form-toolbar">
+        <div><div class="window-kicker">Ficheros de solvencia</div><h2 style="margin:0;font-size:18px;">Inclusión y gestión de morosidad</h2></div>
+        <button class="close-top-page">Volver a inicio</button>
+      </div>
+      <div class="fich-layout">
+        <section class="fich-main">
+          <h2 style="margin:0 0 10px;">Ficheros de solvencia para reforzar la seguridad jurídica y cobro de deudas.</h2>
+          <p style="color:#615b50;">Permite la inclusión de deudas ciertas, vencidas y exigibles en registros de morosidad legalmente constituidos.</p>
+        </section>
+        <aside class="fich-side">
+          <article class="fich-card">
+            <h3>Incluir impago / deudor</h3>
+            <button class="comm-btn">Registrar Deuda</button>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT CENTRAL DE NAVEGACIÓN Y COMPORTAMIENTOS DINÁMICOS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Función central de cierre de todos los modales
+      function closeAll() {
+        const pages = document.querySelectorAll(
+          '.user-page, .recovery-page, .premium-home-page, .info-page, ' +
+          '.solv-form-page, .solv-page, .fich-page, .premasc-form-page, ' +
+          '.premasc-page, .burofax-page, .comm-page, .highclaim-page, .form-page'
+        );
+        pages.forEach(p => {
+          p.classList.remove('open');
+          p.setAttribute('aria-hidden', 'true');
+        });
+      }
+
+      // Abrir una página/modal específica por ID
+      function openPage(id) {
+        closeAll();
+        const page = document.getElementById(id);
+        if (page) {
+          page.classList.add('open');
+          page.setAttribute('aria-hidden', 'false');
+          window.scrollTo({top:0, behavior:'smooth'});
+        }
+      }
+
+      // Conectar todos los botones globales de "Volver" / "Cerrar"
+      document.querySelectorAll('.close-top-page, .form-back').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeAll();
+        });
+      });
+
+      // Navegación superior (Topbar)
+      document.getElementById('navInicio').addEventListener('click', closeAll);
+      document.getElementById('navServicios').addEventListener('click', () => openPage('serviciosPage'));
+      document.getElementById('navPremium').addEventListener('click', () => openPage('premiumHomePage'));
+      
+      document.getElementById('navContacto').addEventListener('click', () => openPage('contactoPage'));
+      document.getElementById('navAreaPrivada').addEventListener('click', () => openPage('userAccessPage'));
+      document.getElementById('navAccesoUsuario').addEventListener('click', () => openPage('userAccessPage'));
+      document.getElementById('navRegistro').addEventListener('click', () => openPage('registroPage'));
+      document.getElementById('btnRegistroCta').addEventListener('click', () => openPage('registroPage'));
+
+      // Área de Acceso (Login a Dashboard)
+      document.getElementById('btnEntrarLogin').addEventListener('click', () => openPage('dashboardPage'));
+      document.getElementById('btnForgotUser').addEventListener('click', () => openPage('recoveryPage'));
+      document.getElementById('btnForgotPass').addEventListener('click', () => openPage('recoveryPage'));
+
+      // Tarjetas de servicios del menú lateral y de Home
+      document.getElementById('srvLetrados').addEventListener('click', () => openPage('letradosPage'));
+      document.getElementById('srvMenor2000').addEventListener('click', () => openPage('menor2000Page'));
+      document.getElementById('srvMayor2000').addEventListener('click', () => openPage('mayor2000Page'));
+      document.getElementById('srvComunicaciones').addEventListener('click', () => openPage('comunicacionesPage'));
+      document.getElementById('srvPremasc').addEventListener('click', () => openPage('premascPage'));
+      document.getElementById('srvInformesSolvencia').addEventListener('click', () => openPage('informesSolvenciaPage'));
+      document.getElementById('srvFicherosSolvencia').addEventListener('click', () => openPage('ficherosSolvenciaPage'));
+      
+      document.getElementById('srvPack').addEventListener('click', closeAll);
+      document.getElementById('srvAutonomos').addEventListener('click', () => openPage('autonomosPage'));
+      document.getElementById('srv7').addEventListener('click', () => openPage('premiumHomePage'));
+      document.getElementById('cardPremium').addEventListener('click', () => openPage('premiumHomePage'));
+
+      // Simulación de lectura de Tarjeta ACA que lleva al Dashboard
+      document.getElementById('btnSimularCard').addEventListener('click', () => {
+        openPage('dashboardPage');
+      });
+
+      // Interacción con los cuadros del Dashboard (Casos Activos, Pendientes, Expedientes)
+      function abrirDetalleCasos(tipo) {
+        const titulo = document.getElementById('detalleTitulo');
+        const subtitulo = document.getElementById('detalleSubtitulo');
+        const kicker = document.getElementById('detalleKicker');
+        const contenido = document.getElementById('detalleContenido');
+
+        if(tipo === 'activos') {
+          kicker.innerText = "Filtro: Casos Activos";
+          titulo.innerText = "Casos Activos en Curso";
+          subtitulo.innerText = "Expedientes bajo tramitación o negociación actual";
+          contenido.innerHTML = `
+            <div class="doc-item"><strong>#EXP-2026-001</strong> - Reclamación inferior a 2.000 € (En revisión jurídica)</div>
+            <div class="doc-item"><strong>#EXP-2026-089</strong> - PREMASC · Propuesta vinculante (Entregado a contraparte)</div>
+            <div class="doc-item"><strong>#EXP-2026-210</strong> - Mediación extrajudicial (Activo)</div>
+          `;
+        } else if(tipo === 'pendientes') {
+          kicker.innerText = "Filtro: Casos Pendientes";
+          titulo.innerText = "Casos Pendientes de Acción";
+          subtitulo.innerText = "Expedientes que requieren aportación de datos o firma";
+          contenido.innerHTML = `
+            <div class="doc-item"><strong>#EXP-2026-042</strong> - Comunicación fehaciente (Pendiente de envío y validación de dirección)</div>
+          `;
+        } else {
+          kicker.innerText = "Filtro General";
+          titulo.innerText = "Todos los Expedientes Registrados";
+          subtitulo.innerText = "Listado completo histórico del cliente";
+          contenido.innerHTML = `
+            <div class="doc-item"><strong>#EXP-2026-001</strong> - Reclamación inferior a 2.000 €</div>
+            <div class="doc-item"><strong>#EXP-2026-042</strong> - Comunicación fehaciente (Burofax)</div>
+            <div class="doc-item"><strong>#EXP-2026-089</strong> - PREMASC · Propuesta vinculante</div>
+            <div class="doc-item"><strong>#EXP-2026-104</strong> - Informe de solvencia patrimonial</div>
+            <div class="doc-item"><strong>#EXP-2026-155</strong> - Reclamación judicial superior a 2.000 €</div>
+            <div class="doc-item"><strong>#EXP-2026-210</strong> - Mediación extrajudicial</div>
+          `;
+        }
+        openPage('detalleCasosPage');
+      }
+
+      document.getElementById('cardCasosActivos').addEventListener('click', () => abrirDetalleCasos('activos'));
+      document.getElementById('cardCasosPendientes').addEventListener('click', () => abrirDetalleCasos('pendientes'));
+      document.getElementById('cardExpedientesTotal').addEventListener('click', () => abrirDetalleCasos('total'));
+
+      // Packs de Autónomos y empresas
+      document.querySelectorAll('.btnPack').forEach(btn => {
+        btn.addEventListener('click', () => openPage('packDetailPage'));
+      });
+
+      // Bloques inferiores (Home)
+      document.getElementById('homeVideos').addEventListener('click', () => openPage('videosPage'));
+      document.getElementById('homeValor').addEventListener('click', () => openPage('valorPage'));
+      document.getElementById('homeCastaras').addEventListener('click', () => openPage('castarasPage'));
+
+      // Enlaces y flujos internos entre los modales de servicio
+      document.getElementById('goPremaskFromMenor').addEventListener('click', () => openPage('premascFehacientePage'));
+      document.getElementById('goPremaskMayor2000').addEventListener('click', () => openPage('premascFehacientePage'));
+      document.getElementById('goPremaskComms').addEventListener('click', () => openPage('premascFehacientePage'));
+      document.getElementById('goSimpleComms').addEventListener('click', () => openPage('burofaxPage'));
+      document.getElementById('startPremascFlow').addEventListener('click', () => openPage('premascFehacientePage'));
+      document.getElementById('openOwnSolvency').addEventListener('click', () => openPage('ownSolvencyPage'));
+      document.getElementById('openOtherSolvency').addEventListener('click', () => openPage('otherSolvencyPage'));
+    });
+  </script>
+</body>
+</html>
